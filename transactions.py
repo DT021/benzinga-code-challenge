@@ -27,7 +27,8 @@ def get_info(stock):
     stock_info['quantity'] = 0
     return stock_info
 
-def buy_stock(stock_info, quantity):
+def buy_stock(stock_symbol, quantity):
+	stock_info = get_info('stock_symbol')
 	if balance - stock_info.ask_price * quantity < 0:
 		return "Not enough money to perform transaction"
 	stock_info['quantity'] += quantity
@@ -35,7 +36,8 @@ def buy_stock(stock_info, quantity):
 	portfolio.append(stock_info)
 	
 
-def sell_stock(stock_info, quantity):
+def sell_stock(stock_symbol, quantity):
+	stock_info = get_info('stock_symbol')
 	if quantity > stock_info['quantity']:
 		return "You do not have enough of this stock to sell"
 	stock_info['quantity'] -= quantity
