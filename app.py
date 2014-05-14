@@ -1,10 +1,10 @@
 from flask import Flask, render_template, session
-import urllib2
+import requests
 
 app = Flask(__name__)
 
 @app.route('/')
-def hello_world():
+def main():
     return render_template('index.html')
     # return urllib2.urlopen('http://data.benzinga.com/stock/F')
 

@@ -1,4 +1,4 @@
-import urllib2
+import requests
 import json
 
 cookie = False
@@ -13,8 +13,7 @@ else:
 def get_info(stock):
     """Gets all relevant info for a stock in puts it all into a dictionary
     """
-    raw_data = urllib2.urlopen('http://data.benzinga.com/stock/' + stock)
-    all_info = json.load(raw_data)
+    all_info = requests.get('http://data.benzinga.com/stock/' + stock).json()
 
     if 'status' in all_info and 'msg' in all_info:
     	return 'Symbol not found'
