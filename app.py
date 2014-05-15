@@ -10,6 +10,7 @@ def main(balance=None, inventory=None, selected=None):
         session['inventory'] = []
     return render_template('index.html', balance=session['balance'], inventory=session['inventory'], selected=selected)
 
+# Handles buying and selling of stocks
 @app.route('/transaction', methods=['POST'])
 def transaction():
     if request.method == 'POST':
@@ -21,23 +22,26 @@ def transaction():
             transactions.sell_stock(stock_symbol, quantity)
     return redirect(url_for('main'))
 
+# Lookup search button
 @app.route('/lookup', methods=['POST'])
 def lookup():
     if request.method == 'POST':
         stock_symbol_lookup = request.form['stock_symbol_lookup']
         stock_info = transactions.get_info(stock_symbol_lookup)
-        print stock_info
     return render_template('index.html', balance=session['balance'], inventory=session['inventory'], selected=stock_info)
 
+# View stock button
 @app.route('/viewstock/<stock>')
 def viewstock(stock):
     stock_info = transactions.get_info(stock)
     return render_template('index.html', balance=session['balance'], inventory=session['inventory'], selected=stock_info)
 
+# Testing stock api
 @app.route('/stocks/<stock>')
 def stocks(stock):
     return jsonify(transactions.get_info(stock))
 
+# Formats the current cash balance
 @app.template_filter('format_balance')
 def format_balance(value):
     return "${:,.2f}".format(value)

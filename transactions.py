@@ -7,7 +7,7 @@ def get_info(stock):
 
     if 'status' in all_info and 'msg' in all_info:
         flash("Stock symbol not found!", "danger")
-        return redirect(url_for('main'))
+        return None
     
     stock_info = {}
     stock_info['name'] = all_info['name']
@@ -18,12 +18,14 @@ def get_info(stock):
     return stock_info
 
 def get_current_quantity(stock_symbol):
+    """Returns the amount of the input stock you currently have"""
     for stock in session['inventory']:
         if stock[1] == stock_symbol:
             return stock[2]
     return 0
 
 def set_info(stock_name, stock_symbol, current_quantity, ask_price):
+    """Updates the balance and amounts of each stock you possess"""
     found = False
     for i in range(len(session['inventory'])):
         stock = session['inventory'][i]
@@ -38,33 +40,40 @@ def set_info(stock_name, stock_symbol, current_quantity, ask_price):
     if not found:
         session['inventory'].append((stock_name, stock_symbol, current_quantity, ask_price))
 
-
-    
-
 def buy_stock(stock_symbol, quantity):
+    """Handles buying a certain quantity of a stock"""
     stock_info = get_info(stock_symbol)
     current_quantity = get_current_quantity(stock_symbol)
+
     quantity = int(quantity)
     stock_info['ask_price'] = float(stock_info['ask_price'])
+    
     if session['balance'] - stock_info['ask_price'] * quantity < 0:
         flash("Not enough money to complete transaction!", "danger")
         return redirect(url_for('main'))
+    
     current_quantity += quantity
     session['balance'] -= stock_info['ask_price'] * quantity
+    
     set_info(stock_info['name'], stock_symbol, current_quantity, stock_info['ask_price'])
     flash("Transaction successful!", "success")
     return redirect(url_for('main'))
 
 def sell_stock(stock_symbol, quantity):
+    """Handles buying a certain quantity of a stock"""
     stock_info = get_info(stock_symbol)
     current_quantity = get_current_quantity(stock_symbol)
+    
     quantity = int(quantity)
     stock_info['bid_price'] = float(stock_info['bid_price'])
+    
     if quantity > current_quantity:
         flash("Not enough stock to sell!", "danger")
         return redirect(url_for('main'))
+    
     current_quantity -= quantity
     session['balance'] += stock_info['bid_price'] * quantity 
+    
     set_info(stock_info['name'], stock_symbol, current_quantity, -1)
     flash("Transaction successful!", "success")
     return redirect(url_for('main'))
