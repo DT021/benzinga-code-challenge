@@ -1,21 +1,24 @@
 <div class="col-md-5">
-  <h3>{{ stock_name }} ({{ stock_symbol }})</h3>
-
-  <table class="table">
-    <tr>
-      <th>Bid</th>
-      <th>Ask</th>
-    </tr>
-    <tr>
-      <td>{{ bid_price }}</td>
-      <td>{{ ask_price }}</td>
-    </tr>
-  </table>
-  {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
-  <form action="{{ url_for('transaction') }}" method="POST" class="form-inline">
-    <input type="text" name="quantity" class="form-control"placeholder="Quantity">
-    <input type="hidden" name="stock_symbol" value="{{ stock_symbol }}">
-    <button type="submit" name="action" value="buy" class="btn btn-success">Buy</button>
-    <button type="submit" name="action" value="sell" class="btn btn-danger">Sell</button>
-  </form>
+  {% if selected %}
+    <h3>{{ selected['name'] }} ({{ selected['symbol'] }})</h3>
+    <table class="table table-striped">
+      <tr>
+        <th>Bid</th>
+        <th>Ask</th>
+      </tr>
+      <tr>
+        <td>{{ selected['bid_price'] }}</td>
+        <td>{{ selected['ask_price'] }}</td>
+      </tr>
+    </table>
+    {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+    <form action="{{ url_for('transaction') }}" method="POST" class="form-inline">
+      <input type="text" name="quantity" class="form-control"placeholder="Quantity">
+      <input type="hidden" name="stock_symbol" value="{{ selected['symbol'] }}">
+      <button type="submit" name="action" value="buy" class="btn btn-success">Buy</button>
+      <button type="submit" name="action" value="sell" class="btn btn-danger">Sell</button>
+    </form>
+  {% else %}
+    <h3> Please use the search box in the upper right to find a stock to buy or sell </h3>
+  {% endif %}
 </div>

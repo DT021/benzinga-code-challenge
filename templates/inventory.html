@@ -1,33 +1,29 @@
 <div class="col-md-7">
   <div class="row">
     <div class="col-sm-7"><h3>Current Portfolio</h3></div>
-    <div class="col-sm-5"><p class="pull-right cash">Cash: $100,000.00</p></div>
+    <div class="col-sm-5"><p class="pull-right cash">Cash: {{balance|format_balance}}</p></div>
   </div>
 
-  <table class="table">
+  <table class="table table-striped">
     <tr>
       <th>Company</th>
       <th>Quantity</th>
       <th>Price Paid</th>
       <th></th>
     </tr>
-    <tr>
-      <td>Ford Motor</td>
-      <td>20</td>
-      <td>14.99</td>
-      <td><button class="btn btn-xs btn-info">View Stock</button></td>
-    </tr>
-    <tr>
-      <td>General Electric</td>
-      <td>10</td>
-      <td>20.00</td>
-      <td><button class="btn btn-xs btn-info">View Stock</button></td>
-    </tr>
-    <tr>
-      <td>Microsoft</td>
-      <td>30</td>
-      <td>24.99</td>
-      <td><button class="btn btn-xs btn-info">View Stock</button></td>
-    </tr>
+    {% for stock in inventory %}
+      <tr>
+        <td>
+        {% print stock[0] %}
+        </td>
+        <td>
+        {% print stock[2] %}
+        </td>
+        <td>
+        {% print stock[3] %}
+        </td>
+        <td><a href="/viewstock/{{ stock[1] }}" class="btn btn-xs btn-info" >View Stock</a></td>
+      </tr>
+    {% endfor %}
   </table>
 </div>

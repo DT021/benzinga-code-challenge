@@ -1,38 +1,46 @@
-from flask import Flask, render_template, session, request, jsonify, abort, redirect, url_for
+from flask import Flask, render_template, session, request, jsonify, redirect, url_for
 import transactions
-import requests
-import json
 
 app = Flask(__name__)
 
 @app.route('/')
-def main():
-    session['cache'] = 100000
-
-    return render_template('index.html')
+def main(balance=None, inventory=None, selected=None):
+    if 'balance' not in session and 'inventory' not in session:
+        session['balance'] = 100000
+        session['inventory'] = []
+    return render_template('index.html', balance=session['balance'], inventory=session['inventory'], selected=selected)
 
 @app.route('/transaction', methods=['POST'])
 def transaction():
-    error = None
-    if requests.method == 'GET':
+    if request.method == 'POST':
         quantity = request.form['quantity']
         stock_symbol = request.form['stock_symbol']
         if request.form['action'] == 'buy':
             transactions.buy_stock(stock_symbol, quantity)
         if request.form['action'] == 'sell':
             transactions.sell_stock(stock_symbol, quantity)
-    return
-
-@app.route('/lookup', methods=['GET'])
-def lookup():
-    # error = None
-    # if requests.method == 'GET':
-
     return redirect(url_for('main'))
+
+@app.route('/lookup', methods=['POST'])
+def lookup():
+    if request.method == 'POST':
+        stock_symbol_lookup = request.form['stock_symbol_lookup']
+        stock_info = transactions.get_info(stock_symbol_lookup)
+        print stock_info
+    return render_template('index.html', balance=session['balance'], inventory=session['inventory'], selected=stock_info)
+
+@app.route('/viewstock/<stock>')
+def viewstock(stock):
+    stock_info = transactions.get_info(stock)
+    return render_template('index.html', balance=session['balance'], inventory=session['inventory'], selected=stock_info)
 
 @app.route('/stocks/<stock>')
 def stocks(stock):
     return jsonify(transactions.get_info(stock))
+
+@app.template_filter('format_balance')
+def format_balance(value):
+    return "${:,.2f}".format(value)
 
 app.secret_key = 'benzinga'
 if __name__ == '__main__':
