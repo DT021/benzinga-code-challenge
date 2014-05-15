@@ -6,3 +6,9 @@ Simple stock portfolio system that allows users to buy, sell and view their port
 Link
 ----
 http://benzinga-code-challenge.herokuapp.com/
+
+Technologies used
+-----------------
+- Python
+- Flask
+- Bootstrap
